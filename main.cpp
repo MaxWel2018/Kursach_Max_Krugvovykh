@@ -5,16 +5,18 @@
 #include <windows.h>
 #include <math.h>
 // Все ограничение вынес в define что бы проще было регулировать.
-
 #define  ALPHA_RESTRICTION_START  0
-#define  E_RESTRICTION_START 1E-9
-#define  V_RESTRICTION_START 1000
-#define  B_RESTRICTION_START 0.01
-
 #define  ALPHA_RESTRICTION_END M_PI/2
+
+#define  E_RESTRICTION_START 1E-9
 #define  E_RESTRICTION_END 3E-9
+
+#define  V_RESTRICTION_START 1000
 #define  V_RESTRICTION_END 2000
+
+#define  B_RESTRICTION_START 0.01
 #define  B_RESTRICTION_END 0.025
+
 using namespace std;
 
 class ComputeObject{
@@ -24,11 +26,7 @@ protected:
     virtual void input()=0;
     virtual void output()=0;
     virtual void parameterCalculation()=0;
-
-
-
 };
-
 
 class Charge:public ComputeObject{
     double temp,temp1,temp2,temp3; // временные переменные
@@ -38,7 +36,7 @@ class Charge:public ComputeObject{
     bool flag3;
     bool flag4;
 protected:
- double e,V,B,alpha;
+    double e,V,B,alpha;
     void rangeCheck(double alpha, double e, double V, double B){
         // проверка на ввод , если хоть  1 данное ведено не верно выводиться сообщение об ошибке ,
         // и поле которое не правильно введено.Если всё верно данные с
@@ -119,17 +117,17 @@ public:
             exit(1); // если файл не открился закрываем программу.
 
         }else{
-       /* fout.setf(ios_base::fixed);   Эксопненциальную в обычную форму
-        fout.precision(10);*/
-        fout << "Начальные данные: "<<endl;
-        fout << "Alpha = " <<alpha <<endl;
-        fout << "e = " << e <<endl;
-        fout << "V = " << V <<endl;
-        fout << "B = " << B <<endl;
-        fout << "Результат: " << endl;
-        fout  << "F = " << F << endl;
-        fout << "----------------------------------------------------------------------------------------------"<<endl;
-        fout.close();
+            /* fout.setf(ios_base::fixed);   Эксопненциальную в обычную форму
+             fout.precision(10);*/
+            fout << "Начальные данные: "<<endl;
+            fout << "Alpha = " <<alpha <<endl;
+            fout << "e = " << e <<endl;
+            fout << "V = " << V <<endl;
+            fout << "B = " << B <<endl;
+            fout << "Результат: " << endl;
+            fout  << "F = " << F << endl;
+            fout << "----------------------------------------------------------------------------------------------"<<endl;
+            fout.close();
         }
     }
     void parameterCalculation()override{
@@ -189,9 +187,33 @@ bool operator<(const Charge &th, const Charge &other) {
 
 Charge::Charge(double alpha, double e, double V, double B) {
     rangeCheck(alpha, e, V, B);
-    };
+};
 
-int main() {
+void equal(Charge i, Charge j) {
+    if (i == j) {
+        cout << "Обьекты равны  " << endl;
+    } else if(i!=j){
+        cout << "Обьекты НЕ равны  " << endl;
+    }else{ cout << "ERROR"<<endl; }
+}
+void equalF(Charge i, Charge j) {
+    if (i > j) {
+        cout << "F первого обьекта больше " << endl;
+    } else if (i < j) {
+        cout << "F второго обьекта больше " << endl;
+    } else { cout << "F Обьектов равны" << endl; }
+}
+void equalV(Charge i, Charge j){
+    if (i <= j) {
+        cout << "Скорость второго заряда  не меньше скорости первого"<< endl;
+    } else if (i >= j) {
+        cout << "Скорость первого заряда  не меньше скорости второго"<< endl;
+
+    }else{
+        cout << "Упс... что-то пошло не так , этого не должны было показать"<<endl;
+    }
+}
+int main(){
 
 
     Charge charge;
@@ -205,28 +227,15 @@ int main() {
     ch.parameterCalculation();
     ch.output();
 
-
-    if (ch == ch1) {
-        cout << "Обьекты равны  " << endl;
-    } else {
-        cout << "Обьекты НЕ равны  " << endl;
+    equal(ch, ch1);
+    equalF(charge, chargeCopy);
+    equalV(charge, ch);
 
 
-    }
-    if (ch > ch1) {
-        cout << "F первого обьекта больше " << endl;
-    }else if(ch<ch1){
-        cout << "F второго обьекта больше " << endl;
-    }else{cout << "F Обьектов равны" <<endl;}
 
-    if (charge <= chargeCopy) {
-        cout << "Скорость второго заряда  не меньше скорости первого"<< endl;
-    } else if (charge >= chargeCopy) {
-        cout << "Скорость первог заряда  не меньше скорости второго"<< endl;
 
-    }else{
-        cout << "Упс... что-то пошло не так , этого не должны было показать"<<endl;
-    }
+
+
 
 
     cin.get();
